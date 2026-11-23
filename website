@@ -169,7 +169,7 @@ dialog form{display:grid;gap:12px}
 <script>
 {
 // ▼ Paste your Google Apps Script web app URL between the quotes (see SETUP.md)
-const SHEET_URL="";
+const SHEET_URL="https://script.google.com/macros/s/AKfycbyQfFYU5T4dTEnuxfHRJ8wmXKIkdEsTHKqZ5AARUV05Mmy-hY75uLKkCK3qbn_saEB6/exec";
 const CATS=["Mains","Sides","Desserts","Drinks","Snacks","Decor & other"];
 const ST={invited:"Invited",coming:"Coming",maybe:"Maybe",no:"Can't"};
 const ORDER=["invited","coming","maybe","no"];
