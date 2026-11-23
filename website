@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas Party Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: warm, playful house-party organiser — friendly, never twee
+   IDEA: the guest list stuck on the fridge, strung with fairy lights
+   PICTURE: the live housemate lists themselves, under a lit garland
+   COLOUR and TYPE: pine green field, cranberry accent, candle gold; Young Serif + Figtree
+   LAYOUT: modest title band, stats, then housemate cards / food board */
+:root{color-scheme:light dark;
+--bg:light-dark(#faf6ef,#0d1712);--paper:light-dark(#ffffff,#15241b);--ink:light-dark(#1a231d,#eef2ec);
+--muted:light-dark(#5d6a61,#9fb2a5);--line:light-dark(#e7e0d2,#26392d);--pine:#163d28;--pine2:#1f5236;
+--berry:light-dark(#b0182d,#ff6f81);--gold:#e7ae45;--ok:light-dark(#1f7a46,#6fd39a);--soft:light-dark(#f3eee4,#1b2d22)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3.5vw,48px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+h1,h2,h3{font-family:"Young Serif",Georgia,serif;font-weight:400;line-height:1.05;margin:0;text-wrap:balance}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;min-height:44px;border-radius:10px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input,select{font-size:16px;min-height:44px;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);width:100%}
+label{font-size:13px;font-weight:600;color:var(--muted);display:grid;gap:4px}
+.btn{background:var(--berry);color:#fff;font-weight:600;padding:0 18px;white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.hero{background:var(--pine);color:#f6f1e6;position:relative;padding-top:clamp(64px,8vw,96px)}
+.lights{position:absolute;inset:0 0 auto 0;height:70px;width:100%}
+.lights circle{animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.lights circle{animation:none}}
+.hero .wrap{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:end;justify-content:space-between}
+.hero h1{font-size:clamp(32px,5vw,52px)}
+.meta{margin:8px 0 0;color:#cfe0d3;display:flex;flex-wrap:wrap;gap:4px 16px}
+.hero .btn.ghost{color:#f6f1e6;border-color:#ffffff44}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#ffffff22;border-radius:14px;overflow:hidden;margin-top:24px}
+.stats div{background:var(--pine2);padding:14px 16px}
+.stats b{display:block;font:400 clamp(26px,4vw,36px)/1 "Young Serif",serif;color:#fff}
+.stats span{font-size:13px;color:#cfe0d3}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
+.tabs{display:flex;background:var(--soft);border-radius:12px;padding:4px}
+.tabs button{padding:0 16px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected=true]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px #0002}
+.bar .right{display:flex;gap:8px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+.bar input{max-width:260px}
+.add{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:grid;grid-template-columns:1.1fr 1.3fr 1.6fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:24px}
+.add h2{grid-column:1/-1;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.host{background:var(--paper);border-radius:16px;border:1.5px solid var(--line);border-top:6px solid var(--c);padding:16px 16px 8px;display:flex;flex-direction:column}
+.host header{display:flex;align-items:center;gap:10px}
+.host h3{font-size:24px;flex:1}
+.host .sub{font-size:13px;color:var(--muted)}
+.own{margin:10px 0 6px;padding:8px 12px;background:var(--soft);border-radius:10px;font-size:15px;text-align:left;width:100%;min-height:44px}
+.own em{color:var(--muted)}
+ul{list-style:none;margin:0;padding:0}
+.g{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.g:first-child{border-top:0}
+.g b{font-weight:600;display:block}
+.g small{color:var(--muted);font-size:14px;display:block}
+.g.no b{text-decoration:line-through;color:var(--muted)}
+.st{font-size:13px;font-weight:700;padding:0 10px;width:84px;border:1.5px solid currentColor}
+.st.invited{color:var(--muted)}.st.coming{color:var(--ok)}.st.maybe{color:#b7801c}.st.no{color:var(--berry)}
+.icon{width:44px;color:var(--muted);font-size:20px}
+.icon:hover{color:var(--ink);background:var(--soft)}
+.cat{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--soft);margin-left:4px;white-space:nowrap}
+.empty{color:var(--muted);padding:12px 0;font-size:15px}
+.big-empty{text-align:center;padding:48px 16px;border:2px dashed var(--line);border-radius:16px;color:var(--muted)}
+.big-empty h2{color:var(--ink);font-size:28px;margin-bottom:8px}
+.food{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.fcol{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px}
+.fcol h3{font-size:22px;display:flex;justify-content:space-between;align-items:baseline}
+.fcol h3 span{font:600 14px Figtree,sans-serif;color:var(--muted)}
+.fcol li{padding:8px 0;border-top:1px solid var(--line)}
+.fcol li:first-of-type{border-top:0}
+.fcol li small{display:block;color:var(--muted);font-size:14px}
+.dup{color:var(--berry);font-weight:700;font-size:12px;margin-left:6px}
+.gap{color:var(--berry);font-size:15px}
+.note{background:light-dark(#fff4dc,#3a2e12);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+dialog{border:0;border-radius:18px;padding:22px;width:min(460px,92vw);background:var(--paper);color:var(--ink);box-shadow:0 20px 60px #0006}
+dialog::backdrop{background:#0a140e99}
+dialog h2{font-size:26px;margin-bottom:14px}
+dialog form{display:grid;gap:12px}
+.row{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-top:6px}
+.row .del{color:var(--berry);font-weight:600;padding:0 8px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+[hidden]{display:none!important}
+@media(max-width:900px){.add{grid-template-columns:1fr 1fr}.add .btn{grid-column:1/-1}}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.add{grid-template-columns:1fr}.bar input{max-width:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="band hero">
+  <svg class="lights" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true" id="lights"></svg>
+  <div class="wrap">
+    <div>
+      <h1 id="pTitle">Our house Christmas party</h1>
+      <p class="meta" id="pMeta"><span>Add a date, time and place</span></p>
+    </div>
+    <button class="btn ghost" id="editParty">Edit party details</button>
+  </div>
+  <div class="wrap stats" id="stats"></div>
+</header>
+
+<main class="band"><div class="wrap">
+  <div class="note" id="note" hidden></div>
+  <div class="bar">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="hosts">By housemate</button>
+      <button role="tab" aria-selected="false" data-tab="food">Who's bringing what</button>
+    </div>
+    <div class="right">
+      <input type="search" id="q" placeholder="Search guests or food" aria-label="Search">
+      <button class="btn ghost" id="addHostBtn">+ Housemate</button>
+    </div>
+  </div>
+
+  <section id="vHosts">
+    <form class="add" id="addForm" hidden>
+      <h2>Add a guest</h2>
+      <label>Invited by<select id="aHost"></select></label>
+      <label>Guest name<input id="aName" required autocomplete="off" placeholder="e.g. Lena"></label>
+      <label>Bringing<input id="aBring" autocomplete="off" placeholder="e.g. mulled wine"></label>
+      <label>Category<select id="aCat"></select></label>
+      <label>RSVP<select id="aSt"></select></label>
+      <button class="btn" type="submit">Add guest</button>
+    </form>
+    <div id="hosts"></div>
+  </section>
+  <section id="vFood" hidden><div id="food"></div></section>
+</div></main>
+
+<dialog id="dGuest"><h2 id="dgT">Edit guest</h2><form id="fGuest">
+  <label>Guest name<input id="gName" required autocomplete="off"></label>
+  <label>Invited by<select id="gHost"></select></label>
+  <label>Bringing<input id="gBring" autocomplete="off" placeholder="Nothing yet"></label>
+  <label>Category<select id="gCat"></select></label>
+  <label>RSVP<select id="gSt"></select></label>
+  <div class="row"><button type="button" class="del" id="gDel">Remove guest</button>
+  <span><button type="button" class="btn ghost" data-close>Cancel</button> <button class="btn">Save</button></span></div>
+</form></dialog>
+
+<dialog id="dHost"><h2 id="dhT">Add a housemate</h2><form id="fHost">
+  <label>Name<input id="hName" required autocomplete="off"></label>
+  <label>They're bringing<input id="hBring" autocomplete="off" placeholder="Nothing yet"></label>
+  <label>Category<select id="hCat"></select></label>
+  <div class="row"><button type="button" class="del" id="hDel">Remove housemate</button>
+  <span><button type="button" class="btn ghost" data-close>Cancel</button> <button class="btn">Save</button></span></div>
+</form></dialog>
+
+<dialog id="dParty"><h2>Party details</h2><form id="fParty">
+  <label>Party name<input id="pT" autocomplete="off" placeholder="Our house Christmas party"></label>
+  <label>Date<input id="pD" type="date"></label>
+  <label>Time<input id="pH" type="time"></label>
+  <label>Where<input id="pW" autocomplete="off" placeholder="Our place"></label>
+  <div class="row"><span></span><span><button type="button" class="btn ghost" data-close>Cancel</button> <button class="btn">Save</button></span></div>
+</form></dialog>
+
+<dialog id="dConfirm"><h2 id="cT">Are you sure?</h2><p id="cP"></p>
+  <div class="row"><span></span><span><button type="button" class="btn ghost" data-close>Cancel</button> <button class="btn" id="cOk">Remove</button></span></div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+// ▼ Paste your Google Apps Script web app URL between the quotes (see SETUP.md)
+const SHEET_URL="";
+const CATS=["Mains","Sides","Desserts","Drinks","Snacks","Decor & other"];
+const ST={invited:"Invited",coming:"Coming",maybe:"Maybe",no:"Can't"};
+const ORDER=["invited","coming","maybe","no"];
+const COLS=["#b0182d","#1f7a46","#e7ae45","#2f6db5","#8a4fbf","#d3642b","#2a9d9a","#c2457e"];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const S={hosts:[],guests:[],party:{},tab:"hosts",q:""};
+let editing=null,confirmFn=null,pending=0;
+const KEY="xmas-party-v1";
+function save(){try{localStorage.setItem(KEY,JSON.stringify({hosts:S.hosts,guests:S.guests,party:S.party}))}catch(e){}}
+try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(d){S.hosts=d.hosts||[];S.guests=d.guests||[];S.party=d.party||{}}}catch(e){}
+
+// fairy lights
+{const pts=[];let s="";for(let i=0;i<=24;i++){const x=i*50,y=14+Math.sin(i*Math.PI/2)**2*22;pts.push([x,y]);}
+s+=`<path d="M${pts.map(p=>p.join(" ")).join(" L")}" fill="none" stroke="#0b2617" stroke-width="2"/>`;
+const lc=["#ff5a6e","#ffd166","#7ee0a2","#8fc3ff","#ffb4e1"];
+pts.forEach((p,i)=>{if(i%1===0)s+=`<circle cx="${p[0]}" cy="${p[1]+7}" r="6" fill="${lc[i%5]}" style="animation-delay:${(i%5)*.45}s"/>`});
+$("#lights").innerHTML=s;}
+
+const opt=(arr,lab)=>arr.map(v=>`<option value="${esc(v)}">${esc(lab?lab[v]:v)}</option>`).join("");
+for(const id of["#aCat","#gCat","#hCat"])$(id).innerHTML=`<option value="">—</option>`+opt(CATS);
+for(const id of["#aSt","#gSt"])$(id).innerHTML=opt(ORDER,ST);
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2600)}
+function note(m){const n=$("#note");n.hidden=!m;n.textContent=m||""}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+const by=a=>(a||[]).slice().sort((x,y)=>(+x.created||0)-(+y.created||0));
+function applyRemote(d){S.hosts=by(d.hosts);S.guests=by(d.guests);S.party=d.party||{};save();render()}
+async function sync(body){
+  save();render();if(!SHEET_URL)return;pending++;
+  try{const r=await fetch(SHEET_URL,{method:"POST",body:JSON.stringify(body)});const d=await r.json();
+    if(d.error)throw new Error(d.error);pending--;if(!pending)applyRemote(d);note("")}
+  catch(e){pending--;toast("Couldn't save to the Google Sheet — check your connection and try again.")}
+}
+function put(col,id,data){const arr=S[col];const i=arr.findIndex(x=>x.id===id);const row={id,...data};i<0?arr.push(row):arr[i]=row;return sync({action:"put",col,id,data})}
+function del(col,id){S[col]=S[col].filter(x=>x.id!==id);return sync({action:"del",col,id})}
+const strip=o=>{const c={...o};delete c.id;return c};
+
+function hostColor(h){return COLS[S.hosts.indexOf(h)%COLS.length]}
+function match(...xs){const q=S.q.trim().toLowerCase();return !q||xs.some(x=>String(x||"").toLowerCase().includes(q))}
+
+function renderParty(){
+  const p=S.party;$("#pTitle").textContent=p.title||"Our house Christmas party";
+  const bits=[];
+  if(p.date){const d=new Date(p.date+"T12:00");bits.push(d.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"}))}
+  if(p.time)bits.push(p.time);if(p.where)bits.push(p.where);
+  $("#pMeta").innerHTML=bits.length?bits.map(b=>`<span>${esc(b)}</span>`).join(""):"<span>Add a date, time and place</span>";
+  const g=S.guests,c=g.filter(x=>x.status==="coming").length,m=g.filter(x=>x.status==="maybe").length;
+  const items=[...S.hosts,...g.filter(x=>x.status!=="no")].filter(x=>x.bring).length;
+  $("#stats").innerHTML=[[g.length,"guests invited"],[c+S.hosts.length,"heads coming (incl. housemates)"],[m,"maybes"],[items,"things being brought"]]
+    .map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
+}
+
+function renderHosts(){
+  const box=$("#hosts");$("#addForm").hidden=!S.hosts.length;
+  const sel=$("#aHost"),keep=sel.value;
+  sel.innerHTML=opt(S.hosts.map(h=>h.id),Object.fromEntries(S.hosts.map(h=>[h.id,h.name])));
+  if(S.hosts.some(h=>h.id===keep))sel.value=keep;
+  if(!S.hosts.length){box.innerHTML=`<div class="big-empty"><h2>Who lives here?</h2><p>Add each housemate first, then everyone can add the guests they're inviting.</p><button class="btn" data-act="addHost">+ Add a housemate</button></div>`;return}
+  box.innerHTML=`<div class="grid">${S.hosts.map(h=>{
+    const gs=S.guests.filter(g=>g.host===h.id&&match(g.name,g.bring,h.name));
+    const all=S.guests.filter(g=>g.host===h.id),yes=all.filter(g=>g.status==="coming").length;
+    return `<article class="host" style="--c:${hostColor(h)}">
+      <header><h3>${esc(h.name)}</h3><button class="icon" data-act="editHost" data-id="${h.id}" aria-label="Edit ${esc(h.name)}">✎</button></header>
+      <div class="sub">${all.length} invited · ${yes} coming</div>
+      <button class="own" data-act="editHost" data-id="${h.id}">${h.bring?`Bringing <b>${esc(h.bring)}</b>${h.cat?`<span class="cat">${esc(h.cat)}</span>`:""}`:"<em>What are you bringing? Tap to add</em>"}</button>
+      <ul>${gs.length?gs.map(g=>`<li class="g ${g.status==="no"?"no":""}">
+        <button class="st ${esc(g.status||"invited")}" data-act="cycle" data-id="${g.id}" title="Tap to change RSVP">${ST[g.status]||"Invited"}</button>
+        <div><b>${esc(g.name)}</b><small>${g.bring?esc(g.bring)+(g.cat?` <span class="cat">${esc(g.cat)}</span>`:""):"Not bringing anything yet"}</small></div>
+        <button class="icon" data-act="editGuest" data-id="${g.id}" aria-label="Edit ${esc(g.name)}">✎</button></li>`).join("")
+        :`<li class="empty">${all.length?"No matches.":"No guests yet — add one above."}</li>`}</ul></article>`}).join("")}</div>`;
+}
+
+function renderFood(){
+  const rows=[...S.hosts.map(h=>({name:h.name,bring:h.bring,cat:h.cat,by:"housemate"})),
+    ...S.guests.filter(g=>g.status!=="no").map(g=>{const h=S.hosts.find(x=>x.id===g.host);return{name:g.name,bring:g.bring,cat:g.cat,by:h?`${h.name}'s guest`:"guest",maybe:g.status==="maybe"||g.status==="invited"}})]
+    .filter(r=>r.bring);
+  const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,"");
+  const cnt={};rows.forEach(r=>cnt[norm(r.bring)]=(cnt[norm(r.bring)]||0)+1);
+  const cats=[...CATS,""];
+  const missing=CATS.slice(0,4).filter(c=>!rows.some(r=>r.cat===c));
+  $("#food").innerHTML=(missing.length&&S.hosts.length?`<p class="gap">Nobody's down for <b>${missing.join(", ")}</b> yet.</p>`:"")+
+  (!rows.length?`<div class="big-empty"><h2>Nothing pledged yet</h2><p>When you add what each guest or housemate is bringing, it shows up here sorted by course — handy for spotting five bags of chips and no dessert.</p></div>`:
+  `<div class="food">${cats.map(c=>{const rs=rows.filter(r=>(r.cat||"")===c&&match(r.bring,r.name,r.by));if(!rs.length)return"";
+    return `<div class="fcol"><h3>${esc(c||"Uncategorised")}<span>${rs.length}</span></h3><ul>${rs.map(r=>`<li>${esc(r.bring)}${cnt[norm(r.bring)]>1?'<span class="dup">doubled up</span>':""}<small>${esc(r.name)} · ${esc(r.by)}${r.maybe?" · not confirmed":""}</small></li>`).join("")}</ul></div>`}).join("")}</div>`);
+}
+
+function render(){renderParty();renderHosts();renderFood()}
+
+// tabs & search
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;
+  document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",x===b));
+  $("#vHosts").hidden=S.tab!=="hosts";$("#vFood").hidden=S.tab!=="food"});
+$("#q").oninput=e=>{S.q=e.target.value;renderHosts();renderFood()};
+
+// add guest
+$("#addForm").onsubmit=e=>{e.preventDefault();const name=$("#aName").value.trim();if(!name||!$("#aHost").value)return;
+  put("guests",uid(),{host:$("#aHost").value,name,bring:$("#aBring").value.trim(),cat:$("#aCat").value,status:$("#aSt").value,created:Date.now()});
+  $("#aName").value="";$("#aBring").value="";$("#aCat").value="";$("#aSt").value="invited";$("#aName").focus();toast(`${name} added`)};
+
+// dialogs
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest("dialog").close());
+function openHost(h){editing=h||null;$("#dhT").textContent=h?"Edit housemate":"Add a housemate";$("#hDel").hidden=!h;
+  $("#hName").value=h?.name||"";$("#hBring").value=h?.bring||"";$("#hCat").value=h?.cat||"";$("#dHost").showModal();$("#hName").focus()}
+$("#addHostBtn").onclick=()=>openHost();
+$("#fHost").onsubmit=e=>{e.preventDefault();const name=$("#hName").value.trim();if(!name)return;
+  const id=editing?.id||uid();put("hosts",id,{name,bring:$("#hBring").value.trim(),cat:$("#hCat").value,created:editing?.created||Date.now()});$("#dHost").close()};
+$("#hDel").onclick=()=>{const h=editing,n=S.guests.filter(g=>g.host===h.id);$("#dHost").close();
+  ask(`Remove ${h.name}?`,n.length?`This also removes the ${n.length} guest${n.length>1?"s":""} they invited.`:"They have no guests on the list.",async()=>{for(const g of n)await del("guests",g.id);await del("hosts",h.id)})};
+
+function openGuest(g){editing=g;$("#gHost").innerHTML=$("#aHost").innerHTML;
+  $("#gName").value=g.name;$("#gHost").value=g.host;$("#gBring").value=g.bring||"";$("#gCat").value=g.cat||"";$("#gSt").value=g.status||"invited";$("#dGuest").showModal()}
+$("#fGuest").onsubmit=e=>{e.preventDefault();const name=$("#gName").value.trim();if(!name)return;
+  put("guests",editing.id,{...strip(editing),name,host:$("#gHost").value,bring:$("#gBring").value.trim(),cat:$("#gCat").value,status:$("#gSt").value});$("#dGuest").close()};
+$("#gDel").onclick=()=>{const g=editing;$("#dGuest").close();ask(`Remove ${g.name}?`,"They'll come off the guest list and the food board.",()=>del("guests",g.id))};
+
+function ask(t,p,fn){$("#cT").textContent=t;$("#cP").textContent=p;confirmFn=fn;$("#dConfirm").showModal()}
+$("#cOk").onclick=()=>{$("#dConfirm").close();confirmFn&&confirmFn()};
+
+$("#editParty").onclick=()=>{const p=S.party;$("#pT").value=p.title||"";$("#pD").value=p.date||"";$("#pH").value=p.time||"";$("#pW").value=p.where||"";$("#dParty").showModal()};
+$("#fParty").onsubmit=async e=>{e.preventDefault();const d={title:$("#pT").value.trim(),date:$("#pD").value,time:$("#pH").value,where:$("#pW").value.trim()};
+  $("#dParty").close();S.party=d;sync({action:"party",data:d})};
+
+document.body.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const id=b.dataset.id;
+  if(b.dataset.act==="addHost")openHost();
+  if(b.dataset.act==="editHost")openHost(S.hosts.find(h=>h.id===id));
+  if(b.dataset.act==="editGuest")openGuest(S.guests.find(g=>g.id===id));
+  if(b.dataset.act==="cycle"){const g=S.guests.find(x=>x.id===id);const nx=ORDER[(ORDER.indexOf(g.status||"invited")+1)%4];
+    g.status=nx;sync({action:"put",col:"guests",id,data:strip(g)})}});
+
+render();
+
+// load from the Google Sheet, then check for housemates' changes every 20 s
+async function pull(){
+  if(pending||document.hidden||document.querySelector("dialog[open]"))return;
+  try{const r=await fetch(SHEET_URL);const d=await r.json();if(d.error)throw new Error(d.error);if(!pending)applyRemote(d);note("")}
+  catch(e){note("Couldn't reach the Google Sheet — what you see may be out of date.")}
+}
+if(SHEET_URL){if(!S.hosts.length)note("Loading the guest list…");pull();setInterval(pull,20000);document.addEventListener("visibilitychange",pull)}
+else note("Not connected to a Google Sheet yet, so this list is saved in this browser only.");
+}
+</script>
+</body>
+</html>
